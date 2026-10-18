@@ -39,7 +39,12 @@ app.MapGet("/db-check", async (
 
     var value = await command.ExecuteScalarAsync(cancellationToken);
 
-    return Results.Ok(new { connected = Convert.ToInt32(value) == 1 });
+    return Results.Ok(new
+    {
+        connected = Convert.ToInt32(value) == 1,
+        serverVersion = connection.ServerVersion,
+        database = connection.Database
+    });
 });
 
 app.Run();

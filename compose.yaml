@@ -1,0 +1,44 @@
+services:
+  api:
+    image: dotnet-practice:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__MariaDb: "Server=db;Port=3306;Database=dotnet_practice;User ID=dotnet_app;Password=${MARIADB_PASSWORD:?Popuni MARIADB_PASSWORD u .env fajlu};"
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: rebuild
+          path: .
+          ignore:
+            - compose.yaml
+            - README.md
+
+  db:
+    image: mariadb:12.3.3
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:?Popuni MARIADB_ROOT_PASSWORD u .env fajlu}
+      MARIADB_DATABASE: dotnet_practice
+      MARIADB_USER: dotnet_app
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:?Popuni MARIADB_PASSWORD u .env fajlu}
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  mariadb-data:
