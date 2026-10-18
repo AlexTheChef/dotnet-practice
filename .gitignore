@@ -1,0 +1,24 @@
+# .NET build and test output
+[Bb]in/
+[Oo]bj/
+artifacts/
+TestResults/
+coverage/
+*.trx
+*.coverage
+*.coveragexml
+
+# Local editor settings
+.vs/
+.idea/
+*.user
+*.suo
+*.sln.docstates
+
+# Local configuration and development certificates
+.env
+.env.*
+!.env.example
+appsettings.Local.json
+*.pfx
+*.p12
